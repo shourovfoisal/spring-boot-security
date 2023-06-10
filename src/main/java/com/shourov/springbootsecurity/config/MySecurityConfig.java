@@ -27,12 +27,19 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and()
                 .authorizeRequests()
+                .antMatchers("/signin").permitAll()
 //                .antMatchers("/home", "/login", "/register").permitAll()
 //                .antMatchers("/public/**").permitAll()
                 .antMatchers("/public/**").hasAnyRole("NORMAL", "ADMIN")
 //                .antMatchers("/users/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
-                .and().httpBasic();
+                .and()
+//                .httpBasic();
+                .formLogin()
+                .loginPage("/signin")
+                .loginProcessingUrl("/dologin")
+                .defaultSuccessUrl("/users");
+
     }
 
     @Override
