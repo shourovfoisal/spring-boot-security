@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -18,6 +19,13 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                // to enable post methods through csrf security
+                // first send a get request and collect the csrf token (XSRF-TOKEN) from the received cookie
+                // then use that token inside the header of the post request
+                // with the header name "X-XSRF-TOKEN", found in the CookieCsrfTokenRepository
+                // csrf maybe disabled with .csrf.disable() when developing an app, and then re-enabled in production
+                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .and()
                 .authorizeRequests()
 //                .antMatchers("/home", "/login", "/register").permitAll()
 //                .antMatchers("/public/**").permitAll()
